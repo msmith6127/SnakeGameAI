@@ -155,6 +155,64 @@ class SnakeGame:
         self.head = self.Point(x, y)
 
 
+#function numerically represents the current game state
+    def get_state(self):
+        head = self.head
+        point_l = self.Point(head.x - self.BLOCK_SIZE, head.y)
+        point_r = self.Point(head.x + self.BLOCK_SIZE, head.y)
+        point_u = self.Point(head.x, head.y - self.BLOCK_SIZE)
+        point_d = self.Point(head.x, head.y + self.BLOCK_SIZE)
+
+        dir_l = self.direction == Direction.LEFT
+        dir_r = self.direction == Direction.RIGHT
+        dir_u = self.direction == Direction.UP
+        dir_d = self.direction == Direction.DOWN
+
+        # Check danger straight, right, left
+        danger_straight = (
+            (dir_r and self.is_collision(point_r)) or
+            (dir_l and self.is_collision(point_l)) or
+            (dir_u and self.is_collision(point_u)) or
+            (dir_d and self.is_collision(point_d))
+        )
+
+        danger_right = (
+            (dir_u and self.is_collision(point_r)) or
+            (dir_d and self.is_collision(point_l)) or
+            (dir_l and self.is_collision(point_u)) or
+            (dir_r and self.is_collision(point_d))
+        )
+
+        danger_left = (
+            (dir_d and self.is_collision(point_r)) or
+            (dir_u and self.is_collision(point_l)) or
+            (dir_r and self.is_collision(point_u)) or
+            (dir_l and self.is_collision(point_d))
+        )
+
+        # Food location relative to head
+        food_left = self.food.x < self.head.x
+        food_right = self.food.x > self.head.x
+        food_up = self.food.y < self.head.y
+        food_down = self.food.y > self.head.y
+
+        state = [
+            int(danger_straight),  # 1
+            int(danger_right),     # 2
+            int(danger_left),      # 3
+
+            int(dir_l),            # 4
+            int(dir_r),            # 5
+            int(dir_u),            # 6
+            int(dir_d),            # 7
+
+            int(food_left),        # 8
+            int(food_right),       # 9
+            int(food_up),          # 10
+            int(food_down)         # 11
+        ]
+
+        return np.array(state, dtype=int)
 
 if __name__ == '__main__':
 
@@ -198,6 +256,7 @@ if __name__ == '__main__':
 
         # play game with current action, save current state as a result
         curr_reward, curr_game_over, curr_score = test_game.play_step(action=next_action)
+        print(test_game.get_state())
 
 
         # if game over end program
