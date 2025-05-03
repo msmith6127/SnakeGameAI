@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 
 # Optional: for plotting scores
 def plot(scores, mean_scores):
+    '''
+    This is for visualizing progress; 
+    plotting the game score and average scores during training. 
+    '''
     plt.clf()
     plt.title('Training...')
     plt.xlabel('Game')
@@ -16,6 +20,11 @@ def plot(scores, mean_scores):
     plt.pause(0.1)
 
 def train():
+    '''
+    - Plays the game on loop (repeatedly).
+    - Agent decides moves based on experience which will help improve over time. 
+    - Scores progress as training continues.
+    '''
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
