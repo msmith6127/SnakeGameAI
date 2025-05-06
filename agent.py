@@ -21,6 +21,12 @@ class Agent:
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = LinearQNet(11, 128, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
+        self.survival_times = [] #tracks frames per game
+        self.losses = [] # tracks training loss
+        self.random_actions = 0 #count of random actions taken
+        self.model_actions = 0 #count of model-based actions taken
+        self.exploration_rates = [] #track epsilon over time
+        
 
     def get_state(self, game):
         '''
@@ -45,13 +51,16 @@ class Agent:
             mini_sample = self.memory
 
         states, actions, rewards, next_states, dones = zip(*mini_sample)
-        self.trainer.train_step(states, actions, rewards, next_states, dones)
+        loss = self.trainer.train_step(states, actions, rewards, next_states, dones)
+        self.losses.append(loss)
+        return loss
 
     def train_short_memory(self, state, action, reward, next_state, done):
         '''
         Trains the model on the most recent state for quick learning. 
         '''
-        self.trainer.train_step(state, action, reward, next_state, done)
+        loss = self.trainer.train_step(state, action, reward, next_state, done)
+        return loss
 
     def get_action(self, state):
         '''
@@ -59,15 +68,22 @@ class Agent:
         It could either make a random move or decide on its own, whatever it thinks is best. 
         '''
         self.epsilon = 80 - self.n_games
-        final_move = [0, 0, 0]
+        self.epsilon = max(0, self.epsilon) # so epsilon doesn't go below 0
+        
+        # store the current exploration rate
+        exploration_rate = self.epsilon/200
+        
+        final_move = [0, 0, 0] 
 
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 2)
             final_move[move] = 1
+            self.random_actions = self.random_actions + 1 #increment random action counter
         else:
             state0 = torch.tensor(state, dtype=torch.float)
             prediction = self.model(state0)
             move = torch.argmax(prediction).item()
             final_move[move] = 1
+            self.model_actions = self.model_actions + 1 # increment model action counter
 
         return final_move, move
