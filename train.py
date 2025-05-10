@@ -2,6 +2,16 @@ from agent import Agent
 from SnakeGame import SnakeGame
 import matplotlib.pyplot as plt
 
+'''
+train.py - Main training script for Deep Q-Learning Snake Game
+
+This file:
+- Initializes the game and agent
+- Continuously trains the agent via self-play
+- Tracks and visualizes key metrics using matplotlib
+'''
+
+
 # Optional: for plotting scores
 def plot(scores, mean_scores, survival_times=None, mean_survival_times=None, losses=None, exploration_rates=None):
     '''
@@ -85,16 +95,20 @@ def plot(scores, mean_scores, survival_times=None, mean_survival_times=None, los
 
 def train():
     '''
-    - Plays the game on loop (repeatedly).
-    - Agent decides moves based on experience which will help improve over time. 
-    - Scores progress as training continues.
+    Main training loop for the DQN Snake agent:
+    - Plays the Snake game in a continuous loop(repeatedly)
+    - The agent chooses actions based on epsilon-greedy policy and learns via experience replay
+    - Tracks and plots metrics including score, survival time, training loss, and exploration rate
     '''
+    # Lists for plotting metrics
     plot_scores = []
     plot_mean_scores = []
     plot_survival_times = []
     plot_mean_survival_times = []
     plot_losses = [] 
     plot_exploration_rates = []
+    
+    # Cumulative totals for averaging
     total_score = 0
     total_survival_time = 0
     record = 0
@@ -104,7 +118,8 @@ def train():
     agent = Agent()
     game = SnakeGame()
 
-    while True:
+    #Core 5 training steps for each iteration
+    while True: 
         # 1. Get current state
         state_old = agent.get_state(game)
 
@@ -133,6 +148,7 @@ def train():
             long_memory_loss = agent.train_long_memory()
             
             # calculate exploration rate
+            # Linearly decay epsilon: starts from 0.4 (80/200) and decreases to 0 over time
             current_epsilon = max(0, 80 - agent.n_games)
             exploration_rate = current_epsilon / 200
             agent.exploration_rates.append(exploration_rate)
