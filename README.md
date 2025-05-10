@@ -14,6 +14,16 @@ A reinforcement learning project implementing an AI agent to play the classic Sn
   </table>
 </div>
 
+##  Project Report
+
+Our complete final report is available here: [Final Report (PDF)](FINAL%20CS%20549%20-%20Final%20Report%20-%20Google%20Docs.pdf)
+
+This report includes:
+- Detailed methodology
+- Experimental results
+- Performance analysis
+- Conclusions and future work
+
 ## Project Overview
 
 This Snake Game AI was created as a final project for CS549: Machine Learning, taught by Professor Zhang at San Diego State University.
