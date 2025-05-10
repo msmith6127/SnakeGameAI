@@ -11,9 +11,9 @@ class LinearQNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         """
         Initialization using:
-        - input_size: number of features
-        - hidden_size: number of neurons in the hidden layer
-        - output_size: number of actions
+        - input_size: number of input features representing the game state
+        - hidden_size: number of units in the hidden layers
+        - output_size: number of possible actions (e.g., [straight, left, right])
         """
         super(LinearQNet, self).__init__()
         self.linear1 = nn.Linear(input_size, hidden_size)
@@ -79,6 +79,21 @@ class QTrainer:
         # Predict Q values for current state
         pred = self.model(state)
 
+        """
+        For each experience tuple (s, a, r, s', done):
+        
+        If done:
+            Q(s, a) = r
+        Else:
+            Q(s, a) = r + γ * max_a' Q(s', a')
+    
+        Where:
+        - Q(s, a): predicted value for current state and action
+        - r: reward received after taking action a in state s
+        - γ (gamma): discount factor for future rewards
+        - s': next state
+        - a': possible next actions
+        """
         target = pred.clone()
         for idx in range(len(done)):
             Q_new = reward[idx]
