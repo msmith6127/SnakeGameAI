@@ -15,6 +15,14 @@ class Agent:
     '''
     
     def __init__(self):
+        """
+        Initializes the agent with:
+        - epsilon for exploration vs exploitation
+        - gamma as the discount rate for future rewards
+        - replay memory for storing experience tuples
+        - a linear Q-network model and trainer
+        - tracking metrics (loss, exploration, survival time, action types)
+        """
         self.n_games = 0
         self.epsilon = 0  # randomness for exploration
         self.gamma = 0.9  # discount rate
@@ -29,14 +37,22 @@ class Agent:
         
 
     def get_state(self, game):
-        '''
-        Gets the current state from the game environment.
-        '''
+         """
+        Extracts the current state of the game environment.
+        Args: game: The game environment instance
+        Returns:A numpy array representing the state vector
+        """
         return game.get_state()
 
     def remember(self, state, action, reward, next_state, done):
         '''
         Stores a piece of memory to train on later; adds experience. 
+        Args:
+            state: The current state
+            action: Action taken
+            reward: Reward received
+            next_state: Resulting next state
+            done: Boolean indicating if the episode ended
         '''
         self.memory.append((state, action, reward, next_state, done))  # popleft() if full
 
@@ -44,6 +60,7 @@ class Agent:
         '''
         Train the model on past experiences; if it has too many to choose from,
         it should pick a random one. 
+        Returns: The training loss value.
         '''
         if len(self.memory) > BATCH_SIZE:
             mini_sample = random.sample(self.memory, BATCH_SIZE)  # list of tuples
@@ -58,6 +75,14 @@ class Agent:
     def train_short_memory(self, state, action, reward, next_state, done):
         '''
         Trains the model on the most recent state for quick learning. 
+        Args:
+            state: Current state
+            action: Action taken
+            reward: Immediate reward
+            next_state: Next observed state
+            done: Boolean indicating episode end
+
+        Returns: The training loss value.
         '''
         loss = self.trainer.train_step(state, action, reward, next_state, done)
         return loss
@@ -66,8 +91,17 @@ class Agent:
         '''
         This decides what the agent's move should make in its current state.
         It could either make a random move or decide on its own, whatever it thinks is best. 
+        Selects an action using an epsilon-greedy policy:
+        - With probability epsilon, selects a random action (exploration)
+        - Otherwise, chooses the best predicted action (exploitation)
+
+        Args: state: Current game state as input features
+        Returns:
+            A tuple containing:
+                - final_move: One-hot encoded list of the chosen action
+                - move: Integer index of the action taken
         '''
-        self.epsilon = 80 - self.n_games
+        self.epsilon = 80 - self.n_games # decay epsilon
         self.epsilon = max(0, self.epsilon) # so epsilon doesn't go below 0
         
         # store the current exploration rate
