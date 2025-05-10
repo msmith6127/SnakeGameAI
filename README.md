@@ -104,14 +104,9 @@ Our experiments demonstrated significant improvements:
    pip install torch numpy pygame matplotlib
    ```
 
-3. Train the model
+3. Train the model + test
    ```
    python train.py
-   ```
-
-4. Test the trained model
-   ```
-   python test.py
    ```
 
 ## Implementation Details
