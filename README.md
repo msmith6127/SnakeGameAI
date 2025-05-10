@@ -21,7 +21,7 @@ This Snake Game AI was created as a final project for CS549: Machine Learning, t
 By implementing Deep Q-Learning, we've created an agent that learns to play Snake without any hardcoded rules, demonstrating the potential of reinforcement learning to solve sequential decision-making problems.
 
 ## Repository Branches
-
+- **main**: Initial implementation of game enviroment for Snake
 - **deep-learning**: Our baseline implementation with a basic DQN model and standard reward system
 - **modified-deep-learning**: Enhanced version with improved reward mechanisms, flood fill pathing, and exploration strategies
 
