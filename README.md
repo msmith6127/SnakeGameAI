@@ -6,7 +6,7 @@ A reinforcement learning project implementing an AI agent to play the classic Sn
   <table>
     <tr>
       <td><img src="charts.png" width="400" alt="Training charts showing learning progress"></td>
-      <td><img src="game environment.png" width="400" alt="Snake game environment"></td>
+      <td><img src="game enviroment.png" width="400" alt="Snake game environment">
     </tr>
     <tr>
       <td colspan="2" align="center"><img src="sc 1.png" width="400" alt="Snake gameplay screenshot"></td>
